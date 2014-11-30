@@ -1,0 +1,9 @@
+<form method="post">
+	{{ getCsrfInput() }}
+	<input type="hidden" name="action" value="pgen/generate">
+	<label for="password">Password</label>
+	<input type="text" class="text fullwidth" name="password" value="">
+	<p>
+		<button type="submit" class="btn pgen-generate-hash">Generate Hash</button>
+	</p>
+</form>
