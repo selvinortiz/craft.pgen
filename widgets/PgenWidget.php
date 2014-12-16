@@ -10,6 +10,8 @@ class PgenWidget extends BaseWidget
 
 	public function getBodyHtml()
 	{
-		return craft()->templates->render('pgen/pgen.html');
+		$generatedHash = craft()->userSession->getFlash('generatedHash');
+
+		return craft()->templates->render('pgen/pgen.html', compact('generatedHash'));
 	}
 }

@@ -1,9 +1,17 @@
 <form method="post">
 	{{ getCsrfInput() }}
 	<input type="hidden" name="action" value="pgen/generate">
+	<input type="hidden" name="responseFormat" value="flash">
 	<label for="password">Password</label>
 	<input type="text" class="text fullwidth" name="password" value="">
 	<p>
 		<button type="submit" class="btn pgen-generate-hash">Generate Hash</button>
 	</p>
 </form>
+
+{% if generatedHash|length %}
+
+	{% set snippetJs = "prompt('Password Generated.', '" ~ generatedHash ~ "');" %}
+	{% includeJs snippetJs %}
+
+{% endif %}

@@ -20,7 +20,7 @@ class PgenPlugin extends BasePlugin
 
 	public function getDeveloperUrl()
 	{
-		return 'http://twitter.com/selvinortiz';
+		return 'http://selvinortiz.com';
 	}
 
 	public function registerCpRoutes()

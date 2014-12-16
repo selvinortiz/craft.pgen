@@ -11,17 +11,50 @@ class PgenController extends BaseController
 	{
 		$this->requirePostRequest();
 
-		$password = craft()->request->getPost('password', false);
+		$error            = null;
+		$generatedHash    = null;
+		$responseFormat   = craft()->request->getPost('responseFormat', 'json');
+		$suppliedPassword = craft()->request->getPost('password', false);
 
-		if ($password)
+		if ($this->isValidPassword($suppliedPassword))
 		{
 			try
 			{
-				$this->returnJson(array('status' => 'OK', 'result' => craft()->security->hashPassword($password)));
+				$generatedHash = craft()->security->hashPassword($suppliedPassword);
 			}
-			catch (Exception $e) {}
+			catch (Exception $e)
+			{
+				$error = $e->getMessage();
+			}
+		}
+		else
+		{
+			$error = Craft::t('Password provided is invalid.');
 		}
 
-		$this->returnJson(array('status' => 'ERROR', 'result' => 'The hash could not be created'));
+		$this->deliverHash($generatedHash, $responseFormat, $error);
+	}
+
+	protected function isValidPassword($password)
+	{
+		return (bool) (is_string($password) && strlen($password) > 6);
+	}
+
+	protected function deliverHash($hash, $responseFormat, $error)
+	{
+		switch (strtolower($responseFormat))
+		{
+			case 'flash':
+			{
+				craft()->userSession->setFlash('generatedHash', $hash);
+
+				$this->redirectToPostedUrl();
+			}
+			case 'json':
+			default:
+			{
+				$this->returnJson(array('status' => $error ? 'ERROR' : 'OK', 'result' => $error ? $error : $hash));
+			}
+		}
 	}
 }
